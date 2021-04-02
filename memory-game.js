@@ -73,40 +73,42 @@ let card1='';
 let card2='';
 let cardDivs=document.getElementsByClassName('cardDiv');
 let divArray=[...cardDivs];
-let flippedCount=0;
+let disabler=false;
 
 function handleCardClick(evt) {
   let card=evt.target;
+
+  if (disabler===true){
+    return false;
+  }
+
   //if click counter is 0 flip and add class
   if(clickCounter===0){
     flipCard(card);
     card1=card;
-    card1.classList.add('flipped');
-    flippedCount++;
     clickCounter++;
-  }
-
+    card1.classList.add('flipped');
+}
   else if(clickCounter===1){
     flipCard(card);
     card2=card;
-    card2.classList.add('flipped');
-    flippedCount++;
     clickCounter++;
+    card2.classList.add('flipped');
   }
 
-
+  //once two clicks registered, enable disabler to prevent any further clicks from registering and compare the selected card backgrounds
   while(clickCounter===2){
-    //if number of cards with class 'flipped' is 2, disable clicks on other cards
     if(card1.style.background!==card2.style.background){
+      disabler=true;
       setTimeout(function(){
         unFlipCard(card1)
         unFlipCard(card2)
+        disabler=false;
       },1000);
       divArray.forEach(div => {
         div.classList.remove("flipped","disable")
       });
       clickCounter=0;
-      flippedCount=0;
     }
     else if(card1.style.background===card2.style.background){
       card1.classList.add("matched");
@@ -115,7 +117,6 @@ function handleCardClick(evt) {
         div.classList.remove("flipped","disable")
       });
       clickCounter=0;
-      flippedCount=0;
     }
   }
 }
